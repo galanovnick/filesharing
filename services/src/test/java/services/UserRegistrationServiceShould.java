@@ -3,7 +3,6 @@ package services;
 import entity.User;
 import org.junit.Test;
 import repository.InvalidIdException;
-import repository.UserRepository;
 import repository.impl.InMemoryUserRepository;
 import services.impl.UserRegistrationServiceImpl;
 
@@ -28,8 +27,9 @@ public class UserRegistrationServiceShould {
 
     @Test(expected = DuplicateUserException.class)
     public void notRegisterDuplicatedUser() throws DuplicateUserException {
-        User expected = new User("username", "user@mail.mail", "pass");
+        User someUser = new User("username", "user@mail.mail", "pass");
 
-        userRegistrationService.register(expected);
+        userRegistrationService.register(someUser);
+        userRegistrationService.register(someUser);
     }
 }
