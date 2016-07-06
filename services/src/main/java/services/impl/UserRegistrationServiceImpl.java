@@ -31,7 +31,9 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 
         for (User u : users) {
             if (u.getEmail().equals(user.getEmail())) {
-                log.error("User with email = \"" + u.getEmail() + "\" already exist.");
+                if (log.isDebugEnabled()) {
+                    log.debug("User with email = \"" + u.getEmail() + "\" already exist.");
+                }
                 throw new DuplicateUserException("User with such email already exist.");
             }
         }

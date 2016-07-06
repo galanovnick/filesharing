@@ -8,6 +8,7 @@ import repository.UserRepository;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -45,5 +46,25 @@ public class InMemoryUserRepository implements UserRepository {
 
     public Collection<User> getAll() {
         return content.values();
+    }
+
+    @Override
+    public Optional<User> getByUsername(String username) {
+        for (User user : content.values()) {
+            if (user.getUsername().equals(username)) {
+                return Optional.of(user);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<User> getByEmail(String email) {
+        for (User user : content.values()) {
+            if (user.getEmail().equals(email)) {
+                return Optional.of(user);
+            }
+        }
+        return Optional.empty();
     }
 }

@@ -15,8 +15,8 @@ public class UserAuthentication {
 
     private AuthenticationToken token;
 
-    public UserAuthentication(UserAuthenticationId id, UserId userId, AuthenticationToken token) {
-        this.id = id;
+    public UserAuthentication(UserId userId, AuthenticationToken token) {
+        this.id = new UserAuthenticationId(0);
         this.userId = userId;
         this.token = token;
     }

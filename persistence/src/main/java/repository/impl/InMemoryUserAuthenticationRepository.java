@@ -11,6 +11,7 @@ import services.impl.AuthenticationToken;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -35,25 +36,26 @@ public class InMemoryUserAuthenticationRepository implements UserAuthenticationR
     }
 
     @Override
-    public UserAuthentication get(UserAuthenticationId id) throws InvalidIdException {
-        checkNotNull(id);
-
-        UserAuthentication userAuthentication = content.get(id);
-
-        if (userAuthentication != null) {
-            return userAuthentication;
-        } else {
-            throw new InvalidIdException("UserAuthentication with id = " + id.getId() + " doesn't exist.");
+    public Optional<UserAuthentication> getByToken(AuthenticationToken token) {
+        for (UserAuthentication userAuth : content.values()) {
+            if (userAuth.getToken().equals(token)) {
+                return Optional.of(userAuth);
+            }
         }
+
+        return Optional.empty();
     }
 
     @Override
-    public void delete(UserAuthenticationId id) throws InvalidIdException {
-        checkNotNull(id);
-
-        if (content.remove(id) == null) {
-            throw new InvalidIdException("UserAuthentication with id = " + id.getId() + " doesn't exist.");
+    public synchronized void deleteByToken(AuthenticationToken token) throws InvalidIdException {
+        for (UserAuthentication userAuth : content.values()) {
+            if (userAuth.getToken().equals(token)) {
+                content.remove(userAuth.getId());
+                return;
+            }
         }
+
+        throw new InvalidIdException("User authentication with such token doesn't exist.");
     }
 
     @Override
