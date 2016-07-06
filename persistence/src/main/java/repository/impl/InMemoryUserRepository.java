@@ -16,19 +16,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class InMemoryUserRepository implements UserRepository {
 
-    private Map<UserId, User> content = new HashMap<UserId, User>();
+    private Map<UserId, User> content = new HashMap<>();
 
     private long idCounter = 0;
 
     public synchronized UserId add(User user) {
 
-            checkNotNull(user, "User cannot be null.");
+        checkNotNull(user, "User cannot be null.");
 
-            user.setId(new UserId(idCounter++));
+        user.setId(new UserId(idCounter++));
 
-            content.put(user.getId(), user);
+        content.put(user.getId(), user);
 
-            return user.getId();
+        return user.getId();
     }
 
     public User get(UserId userId) throws InvalidIdException {

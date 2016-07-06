@@ -4,7 +4,6 @@ import entity.User;
 import entity.tiny.UserId;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Interface for user repository.
