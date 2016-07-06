@@ -3,7 +3,6 @@ package services.impl;
 import entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import repository.UniqueFieldException;
 import repository.UserRepository;
 import services.DuplicateUserException;
 import services.UserRegistrationService;

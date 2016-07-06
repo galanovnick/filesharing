@@ -1,5 +1,6 @@
 package services;
 
+import entity.User;
 import services.impl.AuthenticationToken;
 
 /**
@@ -13,7 +14,8 @@ public interface UserAuthenticationService {
      * @param password - user password.
      * @return user authentication token.
      */
-    AuthenticationToken authenticateByUsername(String username, String password);
+    AuthenticationToken authenticateByUsername(String username, String password)
+            throws AuthenticationException;
 
     /**
      * Authenticates user by email and password.
@@ -21,11 +23,14 @@ public interface UserAuthenticationService {
      * @param password - user password.
      * @return user authentication token.
      */
-    AuthenticationToken authenticateByEmail(String email, String password);
+    AuthenticationToken authenticateByEmail(String email, String password)
+            throws AuthenticationException;
 
     /**
      * Makes authentication token invalid.
      * @param token - authentication token.
      */
     void terminateAuthentication(AuthenticationToken token);
+
+    boolean checkAuthentication(AuthenticationToken token, User user);
 }
