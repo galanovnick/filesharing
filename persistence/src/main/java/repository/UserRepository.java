@@ -2,7 +2,6 @@ package repository;
 
 import com.google.common.base.Optional;
 import entity.User;
-import entity.tiny.UserId;
 
 import java.util.Collection;
 
@@ -11,9 +10,9 @@ import java.util.Collection;
  */
 public interface UserRepository {
 
-    UserId add(User user);
+    entity.tiny.UserId add(User user);
 
-    User get(UserId userId) throws InvalidIdException;
+    User get(entity.tiny.UserId userId) throws InvalidIdException;
 
     Optional<User> getByUsername(String username);
 

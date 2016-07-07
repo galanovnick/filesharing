@@ -20,8 +20,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class InMemoryUserAuthenticationRepository implements UserAuthenticationRepository {
 
-    private final Logger log = LoggerFactory.getLogger(InMemoryUserAuthenticationRepository.class);
-
     private Map<UserAuthenticationId, UserAuthentication> content = new HashMap<>();
 
     private long idCounter = 0;
@@ -46,7 +44,7 @@ public class InMemoryUserAuthenticationRepository implements UserAuthenticationR
             }
         }
 
-        return Optional.fromNullable(null);
+        return Optional.absent();
     }
 
     @Override

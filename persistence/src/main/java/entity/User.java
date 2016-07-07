@@ -1,13 +1,11 @@
 package entity;
 
-import entity.tiny.UserId;
-
 /**
  * User entity.
  */
 public class User {
 
-    private UserId id;
+    private entity.tiny.UserId id;
 
     private String username;
 
@@ -16,7 +14,7 @@ public class User {
     private String password;
 
     public User(String username, String email, String password) {
-        this.id = new UserId(0);
+        this.id = new entity.tiny.UserId(0);
         this.username = username;
         this.email = email;
         this.password = password;
@@ -45,11 +43,11 @@ public class User {
         return result;
     }
 
-    public UserId getId() {
+    public entity.tiny.UserId getId() {
         return id;
     }
 
-    public void setId(UserId id) {
+    public void setId(entity.tiny.UserId id) {
         this.id = id;
     }
 

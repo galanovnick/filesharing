@@ -3,6 +3,7 @@ package services.impl;
 import com.google.common.base.Optional;
 import entity.User;
 import entity.UserAuthentication;
+import entity.tiny.UserId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.InvalidIdException;
@@ -124,27 +125,40 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     }
 
     @Override
-    public boolean checkAuthentication(AuthenticationToken token, User user) {
+    public boolean checkAuthentication(AuthenticationToken token, UserId userId) {
+
+        checkNotNull(token, "Token cannot be null.");
+        checkNotNull(userId, "User id cannot be null");
+
+        final User user;
+        try {
+            user = userRepository.get(userId);
+        } catch (InvalidIdException e) {
+            throw new IllegalArgumentException("Invalid user id.");
+        }
 
         if (log.isDebugEnabled()) {
             log.debug("Trying to check authentication for user=\"" + user.getUsername()
                     + "\" with token = \"" + token.getToken() + "\".");
         }
 
-        checkNotNull(token, "Token cannot be null.");
-        checkNotNull(user, "User cannot be null");
-
         Optional<UserAuthentication> authByToken = userAuthenticationRepository.getByToken(token);
 
-        if (authByToken.isPresent() && authByToken.get().getUserId().equals(user.getId())) {
+        if (authByToken.isPresent() && authByToken.get().getUserId().equals(userId)) {
             if (log.isDebugEnabled()) {
                 log.debug("Authentication successfully checked.");
             }
             return true;
         }
-
-        if (log.isDebugEnabled()) {
-            log.debug("Failed authentication check.");
+        if (!authByToken.isPresent()) {
+            if (log.isDebugEnabled()) {
+                log.debug("Failed authentication. No authenticated tokens found (token = \"" + token + "\")");
+            }
+        } else {
+            if (log.isDebugEnabled()) {
+                log.debug("Failed authentication. No authenticated tokens for " +
+                        "specified user found (user id = \"" + userId.getId() + "\")");
+            }
         }
         return false;
     }

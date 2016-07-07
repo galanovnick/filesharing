@@ -1,6 +1,6 @@
 package services;
 
-import entity.User;
+import entity.tiny.UserId;
 import services.impl.AuthenticationToken;
 
 /**
@@ -32,5 +32,5 @@ public interface UserAuthenticationService {
      */
     void terminateAuthentication(AuthenticationToken token);
 
-    boolean checkAuthentication(AuthenticationToken token, User user);
+    boolean checkAuthentication(AuthenticationToken token, UserId userId);
 }

@@ -2,7 +2,6 @@ package repository.impl;
 
 import com.google.common.base.Optional;
 import entity.User;
-import entity.tiny.UserId;
 import repository.InvalidIdException;
 import repository.UserRepository;
 
@@ -17,22 +16,22 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class InMemoryUserRepository implements UserRepository {
 
-    private Map<UserId, User> content = new HashMap<>();
+    private Map<entity.tiny.UserId, User> content = new HashMap<>();
 
     private long idCounter = 0;
 
-    public synchronized UserId add(User user) {
+    public synchronized entity.tiny.UserId add(User user) {
 
         checkNotNull(user, "User cannot be null.");
 
-        user.setId(new UserId(idCounter++));
+        user.setId(new entity.tiny.UserId(idCounter++));
 
         content.put(user.getId(), user);
 
         return user.getId();
     }
 
-    public User get(UserId userId) throws InvalidIdException {
+    public User get(entity.tiny.UserId userId) throws InvalidIdException {
         checkNotNull(userId, "User id cannot be null.");
 
         User user = content.get(userId);
@@ -55,7 +54,7 @@ public class InMemoryUserRepository implements UserRepository {
                 return Optional.of(user);
             }
         }
-        return Optional.fromNullable(null);
+        return Optional.absent();
     }
 
     @Override
@@ -65,6 +64,6 @@ public class InMemoryUserRepository implements UserRepository {
                 return Optional.of(user);
             }
         }
-        return Optional.fromNullable(null);
+        return Optional.absent();
     }
 }

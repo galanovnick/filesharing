@@ -51,8 +51,8 @@ public class UserAuthenticationServiceShould {
         AuthenticationToken token =
                 userAuthenticationService.authenticateByEmail(user.getEmail(), user.getPassword());
 
-        assertEquals("Failed authentication termination.", true,
-                userAuthenticationService.checkAuthentication(token, user));
+        assertEquals("Failed authentication check.", true,
+                userAuthenticationService.checkAuthentication(token, user.getId()));
     }
 
     @Test
@@ -63,6 +63,6 @@ public class UserAuthenticationServiceShould {
         userAuthenticationService.terminateAuthentication(token);
 
         assertEquals("Failed authentication termination.", false,
-                userAuthenticationService.checkAuthentication(token, user));
+                userAuthenticationService.checkAuthentication(token, user.getId()));
     }
 }
