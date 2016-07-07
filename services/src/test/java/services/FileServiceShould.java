@@ -79,26 +79,20 @@ public class FileServiceShould {
     }
 
     @Test
-    public void provideFilesMeta() {
-        Optional<File> fileMeta = fileRepository.getFileMeta(file.getId());
+    public void provideFilesMeta() throws AuthenticationException {
+        File fileMeta = fileService.getFileMeta(token, file.getId(), file.getOwnerId());
 
-        if (fileMeta.isPresent()) {
-            checkFileMeta(file, fileMeta.get());
-        } else {
-            fail("Failed file meta return.");
-        }
+        checkFileMeta(file, fileMeta);
     }
 
     @Test
-    public void provideFilesContent() throws IOException {
-        Optional<ByteArrayInputStream> content = fileRepository.getFileContent(file.getId());
+    public void provideFilesContent() throws IOException, AuthenticationException {
+        ByteArrayInputStream content = fileService.getFileContent(token, file.getId(), file.getOwnerId());
 
-        if (content.isPresent()) {
-            FileInputStream fileInputStream = new FileInputStream(fileContent);
-            checkFileContent(fileInputStream, content.get());
-        } else {
-            fail("Failed file content return.");
-        }
+
+        FileInputStream fileInputStream = new FileInputStream(fileContent);
+        checkFileContent(fileInputStream, content);
+
     }
 
     private void checkFileMeta(File expected, File actual) {

@@ -3,6 +3,7 @@ package services.impl;
 import com.google.common.base.Optional;
 import entity.File;
 import entity.tiny.FileId;
+import entity.tiny.UserId;
 import repository.FileRepository;
 import services.AuthenticationException;
 import services.FileService;
@@ -37,12 +38,12 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public ByteArrayInputStream getFileContent(AuthenticationToken token, File file)
+    public ByteArrayInputStream getFileContent(AuthenticationToken token, FileId fileId, UserId userId)
             throws AuthenticationException {
 
-        if (authenticationService.checkAuthentication(token, file.getOwnerId())) {
+        if (authenticationService.checkAuthentication(token, userId)) {
 
-            Optional<ByteArrayInputStream> fileContent = fileRepository.getFileContent(file.getId());
+            Optional<ByteArrayInputStream> fileContent = fileRepository.getFileContent(fileId);
 
             if (fileContent.isPresent()) {
                 return fileContent.get();
@@ -55,18 +56,24 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public File getFileMeta(AuthenticationToken token, File file) throws AuthenticationException {
-        if (authenticationService.checkAuthentication(token, file.getOwnerId())) {
+    public File getFileMeta(AuthenticationToken token, FileId fileId, UserId userId) throws AuthenticationException {
 
-            Optional<File> fileMeta = fileRepository.getFileMeta(file.getId());
+        if (authenticationService.checkAuthentication(token, userId)) {
 
-            if (fileMeta.isPresent()) {
-                return fileMeta.get();
+            Optional<File> fileContent = fileRepository.getFileMeta(fileId);
+
+            if (fileContent.isPresent()) {
+                return fileContent.get();
             } else {
                 throw new IllegalArgumentException("Invalid file id.");
             }
         } else {
             throw new AuthenticationException("Specified token is not authenticate.");
         }
+    }
+
+    @Override
+    public void deleteFile(AuthenticationException token, FileId fileId, UserId userId) {
+
     }
 }
