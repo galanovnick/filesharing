@@ -17,6 +17,7 @@ import services.impl.UserAuthenticationServiceImpl;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
@@ -40,7 +41,7 @@ public class FileServiceShould {
     private AuthenticationToken token;
 
     @Before
-    public void before() throws AuthenticationException {
+    public void before() throws AuthenticationException, FileNotFoundException {
 
         User user = new User("user", "user@mail.com", "pass");
 
@@ -49,15 +50,14 @@ public class FileServiceShould {
         file = new File(new LocationId(0), fileContent.getName() , null, user.getId());
 
         token = authenticationService.authenticateByUsername("user", "pass");
-    }
-
-    @Test
-    public void addFiles() throws IOException, AuthenticationException {
-
 
         FileInputStream fileStream = new FileInputStream(fileContent);
 
         fileService.add(token, file, fileStream);
+    }
+
+    @Test
+    public void addFiles() throws IOException, AuthenticationException {
 
         Optional<File> actual = fileRepository.getFileMeta(file.getId());
 
@@ -66,7 +66,7 @@ public class FileServiceShould {
         if (actual.isPresent() && actualContent.isPresent()) {
             checkFileMeta(file, actual.get());
 
-            fileStream = new FileInputStream(fileContent);
+            FileInputStream fileStream = new FileInputStream(fileContent);
 
             checkFileContent(fileStream, actualContent.get());
         } else {
@@ -78,8 +78,31 @@ public class FileServiceShould {
         }
     }
 
+    @Test
+    public void provideFilesMeta() {
+        Optional<File> fileMeta = fileRepository.getFileMeta(file.getId());
+
+        if (fileMeta.isPresent()) {
+            checkFileMeta(file, fileMeta.get());
+        } else {
+            fail("Failed file meta return.");
+        }
+    }
+
+    @Test
+    public void provideFilesContent() throws IOException {
+        Optional<ByteArrayInputStream> content = fileRepository.getFileContent(file.getId());
+
+        if (content.isPresent()) {
+            FileInputStream fileInputStream = new FileInputStream(fileContent);
+            checkFileContent(fileInputStream, content.get());
+        } else {
+            fail("Failed file content return.");
+        }
+    }
+
     private void checkFileMeta(File expected, File actual) {
-        assertEquals("Failed file meta addition.", expected, actual);
+        assertEquals("Failed file meta return.", expected, actual);
     }
 
     private void checkFileContent(FileInputStream expected, ByteArrayInputStream actual) throws IOException {
@@ -87,7 +110,7 @@ public class FileServiceShould {
         int actualValue;
         while (((expectedValue = expected.read()) != -1)
                 && ((actualValue = actual.read()) != -1)) {
-            assertEquals("Failed file content addition.", expectedValue, actualValue);
+            assertEquals("Failed file content return.", expectedValue, actualValue);
         }
     }
 }

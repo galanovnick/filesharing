@@ -19,7 +19,9 @@ public interface FileService {
     void add(AuthenticationToken token, File file, FileInputStream inputStream)
             throws AuthenticationException;
 
-    ByteArrayInputStream getFileContent(AuthenticationToken token, FileId fileId);
+    ByteArrayInputStream getFileContent(AuthenticationToken token, File file)
+            throws AuthenticationException;
 
-    File getFileMeta(AuthenticationToken token, FileId fileId);
+    File getFileMeta(AuthenticationToken token, File file)
+            throws AuthenticationException;
 }
