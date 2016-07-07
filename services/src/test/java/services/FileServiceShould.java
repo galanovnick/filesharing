@@ -3,6 +3,7 @@ package services;
 import com.google.common.base.Optional;
 import entity.File;
 import entity.User;
+import entity.tiny.FileId;
 import entity.tiny.LocationId;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +20,9 @@ import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -37,13 +41,12 @@ public class FileServiceShould {
     private final java.io.File fileContent = new java.io.File("build.gradle");
 
     private File file;
+    private final User user = new User("user", "user@mail.com", "pass");
 
     private AuthenticationToken token;
 
     @Before
     public void before() throws AuthenticationException, FileNotFoundException {
-
-        User user = new User("user", "user@mail.com", "pass");
 
         userRepository.add(new User("user", "user@mail.com", "pass"));
 
@@ -101,7 +104,48 @@ public class FileServiceShould {
 
         fileService.getFileMeta(token, file.getId(), file.getOwnerId());
     }
+    
+    @Test
+    public void beSafeInMultithreading() throws Exception {
 
+        final ExecutorService executorService = Executors.newFixedThreadPool(50);
+
+        final CountDownLatch countDownLatch = new CountDownLatch(50);
+
+        List<Future<FileId>> futuresList = new ArrayList<>();
+
+        file = new File(new LocationId(0), fileContent.getName() , null, user.getId());
+
+        FileInputStream fileStream = new FileInputStream(fileContent);
+
+        for (int i = 0; i < 50; i++) {
+            futuresList.add(executorService.submit(() -> {
+
+                countDownLatch.countDown();
+                countDownLatch.await();
+
+                try {
+                    fileService.deleteFile(token, fileService.add(token, file, fileStream), user.getId());
+
+                    fileService.add(token, file, fileStream);
+
+                    fileService.deleteFile(token, fileService.add(token, file, fileStream), user.getId());
+                    fileService.deleteFile(token, fileService.add(token, file, fileStream), user.getId());
+                } catch (AuthenticationException e) {
+                    fail("Not safe in multithreading.");
+                }
+
+                return file.getId();
+            }));
+        }
+
+        for (Future<FileId> elem : futuresList) {
+            elem.get();
+        }
+
+        assertEquals(51, fileService.getAllMeta().size());
+    }
+    
     private void checkFileMeta(File expected, File actual) {
         assertEquals("Failed file meta return.", expected, actual);
     }
