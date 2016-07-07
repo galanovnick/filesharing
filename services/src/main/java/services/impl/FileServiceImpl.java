@@ -17,6 +17,6 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void add(File file) {
-
+        fileRepository.add(file);
     }
 }
