@@ -1,5 +1,6 @@
 package repository.impl;
 
+import com.google.common.base.Optional;
 import entity.User;
 import entity.tiny.UserId;
 import repository.InvalidIdException;
@@ -8,12 +9,11 @@ import repository.UserRepository;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * In memory representation of user repository.
+ * "In memory" users repository.
  */
 public class InMemoryUserRepository implements UserRepository {
 
@@ -55,7 +55,7 @@ public class InMemoryUserRepository implements UserRepository {
                 return Optional.of(user);
             }
         }
-        return Optional.empty();
+        return Optional.fromNullable(null);
     }
 
     @Override
@@ -65,6 +65,6 @@ public class InMemoryUserRepository implements UserRepository {
                 return Optional.of(user);
             }
         }
-        return Optional.empty();
+        return Optional.fromNullable(null);
     }
 }

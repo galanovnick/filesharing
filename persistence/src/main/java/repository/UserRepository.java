@@ -1,10 +1,10 @@
 package repository;
 
+import com.google.common.base.Optional;
 import entity.User;
 import entity.tiny.UserId;
 
 import java.util.Collection;
-import java.util.Optional;
 
 /**
  * Interface for user repository.

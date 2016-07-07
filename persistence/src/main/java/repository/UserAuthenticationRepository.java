@@ -1,11 +1,11 @@
 package repository;
 
+import com.google.common.base.Optional;
 import entity.UserAuthentication;
 import entity.tiny.UserAuthenticationId;
 import services.impl.AuthenticationToken;
 
 import java.util.Collection;
-import java.util.Optional;
 
 /**
  * Interface for user repository.

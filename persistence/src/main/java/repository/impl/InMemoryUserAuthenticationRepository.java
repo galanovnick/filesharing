@@ -1,9 +1,10 @@
 package repository.impl;
 
-import entity.User;
+import com.google.common.base.Optional;
 import entity.UserAuthentication;
 import entity.tiny.UserAuthenticationId;
-import entity.tiny.UserId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import repository.InvalidIdException;
 import repository.UserAuthenticationRepository;
 import services.impl.AuthenticationToken;
@@ -11,21 +12,23 @@ import services.impl.AuthenticationToken;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * In memory representation of user authentication repository.
+ * "In memory" user authentication repository.
  */
 public class InMemoryUserAuthenticationRepository implements UserAuthenticationRepository {
+
+    private final Logger log = LoggerFactory.getLogger(InMemoryUserAuthenticationRepository.class);
 
     private Map<UserAuthenticationId, UserAuthentication> content = new HashMap<>();
 
     private long idCounter = 0;
 
     @Override
-    public synchronized UserAuthenticationId add(UserAuthentication userAuthentication) {
+    public UserAuthenticationId add(UserAuthentication userAuthentication) {
+
         checkNotNull(userAuthentication);
 
         userAuthentication.setId(new UserAuthenticationId(idCounter++));
@@ -43,7 +46,7 @@ public class InMemoryUserAuthenticationRepository implements UserAuthenticationR
             }
         }
 
-        return Optional.empty();
+        return Optional.fromNullable(null);
     }
 
     @Override
