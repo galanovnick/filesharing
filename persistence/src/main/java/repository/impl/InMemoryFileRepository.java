@@ -114,8 +114,12 @@ public class InMemoryFileRepository implements FileRepository {
         byte[] contentPart = new byte[4096];
         int counter;
 
-        while((counter = fileInputStream.read(contentPart)) != -1) {
-            outputStream.write(contentPart, 0, counter);
+        try {
+            while ((counter = fileInputStream.read(contentPart)) != -1) {
+                outputStream.write(contentPart, 0, counter);
+            }
+        } finally {
+            fileInputStream.close();
         }
 
         filesContent.put(fileId, new FileContent(outputStream.toByteArray(), fileId));

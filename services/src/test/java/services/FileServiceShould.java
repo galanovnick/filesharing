@@ -116,8 +116,6 @@ public class FileServiceShould {
 
         file = new File(new LocationId(0), fileContent.getName() , null, user.getId());
 
-        FileInputStream fileStream = new FileInputStream(fileContent);
-
         for (int i = 0; i < 50; i++) {
             futuresList.add(executorService.submit(() -> {
 
@@ -125,11 +123,15 @@ public class FileServiceShould {
                 countDownLatch.await();
 
                 try {
+                    FileInputStream fileStream = new FileInputStream(fileContent);
                     fileService.deleteFile(token, fileService.add(token, file, fileStream), user.getId());
 
+                    fileStream = new FileInputStream(fileContent);
                     fileService.add(token, file, fileStream);
 
+                    fileStream = new FileInputStream(fileContent);
                     fileService.deleteFile(token, fileService.add(token, file, fileStream), user.getId());
+                    fileStream = new FileInputStream(fileContent);
                     fileService.deleteFile(token, fileService.add(token, file, fileStream), user.getId());
                 } catch (AuthenticationException e) {
                     fail("Not safe in multithreading.");
@@ -153,9 +155,13 @@ public class FileServiceShould {
     private void checkFileContent(FileInputStream expected, ByteArrayInputStream actual) throws IOException {
         int expectedValue;
         int actualValue;
-        while (((expectedValue = expected.read()) != -1)
-                && ((actualValue = actual.read()) != -1)) {
-            assertEquals("Failed file content return.", expectedValue, actualValue);
+        try {
+            while (((expectedValue = expected.read()) != -1)
+                    && ((actualValue = actual.read()) != -1)) {
+                assertEquals("Failed file content return.", expectedValue, actualValue);
+            }
+        } finally {
+            expected.close();
         }
     }
 }
