@@ -74,6 +74,21 @@ public class InMemoryFileRepository implements FileRepository {
         return Optional.absent();
     }
 
+
+    @Override
+    public Optional<File> removeFile(FileId fileId) {
+
+        File removedFile = metaContent.remove(fileId);
+
+        if (removedFile != null) {
+            filesContent.remove(fileId);
+
+            return Optional.of(removedFile);
+        }
+
+        return Optional.absent();
+    }
+
     private void acceptFileContent(FileId fileId, FileInputStream fileInputStream) throws IOException {
 
         if (log.isDebugEnabled()) {
