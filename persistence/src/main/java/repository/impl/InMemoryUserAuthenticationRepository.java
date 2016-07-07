@@ -3,8 +3,6 @@ package repository.impl;
 import com.google.common.base.Optional;
 import entity.UserAuthentication;
 import entity.tiny.UserAuthenticationId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import repository.InvalidIdException;
 import repository.UserAuthenticationRepository;
 import services.impl.AuthenticationToken;
@@ -27,7 +25,7 @@ public class InMemoryUserAuthenticationRepository implements UserAuthenticationR
     @Override
     public UserAuthenticationId add(UserAuthentication userAuthentication) {
 
-        checkNotNull(userAuthentication);
+        checkNotNull(userAuthentication, "UserAuthentication object cannot be null.");
 
         userAuthentication.setId(new UserAuthenticationId(idCounter++));
 
@@ -38,6 +36,9 @@ public class InMemoryUserAuthenticationRepository implements UserAuthenticationR
 
     @Override
     public Optional<UserAuthentication> getByToken(AuthenticationToken token) {
+
+        checkNotNull(token, "Authentication token cannot be null.");
+
         for (UserAuthentication userAuth : content.values()) {
             if (userAuth.getToken().equals(token)) {
                 return Optional.of(userAuth);
@@ -49,6 +50,9 @@ public class InMemoryUserAuthenticationRepository implements UserAuthenticationR
 
     @Override
     public synchronized void deleteByToken(AuthenticationToken token) throws InvalidIdException {
+
+        checkNotNull(token, "Authentication token cannot be null.");
+
         for (UserAuthentication userAuth : content.values()) {
             if (userAuth.getToken().equals(token)) {
                 content.remove(userAuth.getId());

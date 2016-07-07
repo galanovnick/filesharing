@@ -2,6 +2,7 @@ package repository.impl;
 
 import com.google.common.base.Optional;
 import entity.User;
+import entity.tiny.UserId;
 import repository.InvalidIdException;
 import repository.UserRepository;
 
@@ -20,7 +21,7 @@ public class InMemoryUserRepository implements UserRepository {
 
     private long idCounter = 0;
 
-    public synchronized entity.tiny.UserId add(User user) {
+    public UserId add(User user) {
 
         checkNotNull(user, "User cannot be null.");
 

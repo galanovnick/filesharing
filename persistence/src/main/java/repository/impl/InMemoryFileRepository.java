@@ -17,6 +17,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * "In memory" files repository
  */
@@ -32,6 +34,10 @@ public class InMemoryFileRepository implements FileRepository {
 
     @Override
     public FileId add(File file, FileInputStream fileInputStream) {
+
+        checkNotNull(file, "File cannot be null.");
+        checkNotNull(fileInputStream, "File input stream cannot be null.");
+
         file.setId(new FileId(idCounter++));
 
         if (log.isDebugEnabled()) {
@@ -57,6 +63,8 @@ public class InMemoryFileRepository implements FileRepository {
     @Override
     public Optional<File> getFileMeta(FileId fileId) {
 
+        checkNotNull(fileId, "File id cannot be null.");
+
         File file = metaContent.get(fileId);
 
         return Optional.fromNullable(file);
@@ -64,6 +72,8 @@ public class InMemoryFileRepository implements FileRepository {
 
     @Override
     public Optional<ByteArrayInputStream> getFileContent(FileId fileId) {
+
+        checkNotNull(fileId, "File id cannot be null.");
 
         FileContent fileContent = filesContent.get(fileId);
 
@@ -77,6 +87,8 @@ public class InMemoryFileRepository implements FileRepository {
 
     @Override
     public Optional<File> removeFile(FileId fileId) {
+
+        checkNotNull(fileId, "File id cannot be null.");
 
         File removedFile = metaContent.remove(fileId);
 
