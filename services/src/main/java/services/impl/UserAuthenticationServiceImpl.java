@@ -1,5 +1,6 @@
 package services.impl;
 
+import com.google.common.base.Optional;
 import entity.User;
 import entity.UserAuthentication;
 import org.slf4j.Logger;
@@ -9,8 +10,6 @@ import repository.UserAuthenticationRepository;
 import repository.UserRepository;
 import services.AuthenticationException;
 import services.UserAuthenticationService;
-
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;

@@ -1,7 +1,6 @@
 package services;
 
 import entity.File;
-import entity.tiny.UserId;
 
 /**
  * Interface for file management.
