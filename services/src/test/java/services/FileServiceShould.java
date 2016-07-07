@@ -89,10 +89,17 @@ public class FileServiceShould {
     public void provideFilesContent() throws IOException, AuthenticationException {
         ByteArrayInputStream content = fileService.getFileContent(token, file.getId(), file.getOwnerId());
 
-
         FileInputStream fileInputStream = new FileInputStream(fileContent);
         checkFileContent(fileInputStream, content);
 
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void removeFiles() throws AuthenticationException {
+
+        fileService.deleteFile(token, file.getId(), file.getOwnerId());
+
+        fileService.getFileMeta(token, file.getId(), file.getOwnerId());
     }
 
     private void checkFileMeta(File expected, File actual) {

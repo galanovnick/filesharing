@@ -73,7 +73,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void deleteFile(AuthenticationException token, FileId fileId, UserId userId) {
+    public void deleteFile(AuthenticationToken token, FileId fileId, UserId userId) {
 
     }
 }

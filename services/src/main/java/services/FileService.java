@@ -1,7 +1,6 @@
 package services;
 
 import entity.File;
-import entity.User;
 import entity.tiny.FileId;
 import entity.tiny.UserId;
 import services.impl.AuthenticationToken;
@@ -47,5 +46,5 @@ public interface FileService {
      * @param fileId - specified file id
      * @param userId - user id
      */
-    void deleteFile(AuthenticationException token, FileId fileId, UserId userId);
+    void deleteFile(AuthenticationToken token, FileId fileId, UserId userId);
 }
