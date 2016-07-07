@@ -13,9 +13,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -33,7 +30,7 @@ public class InMemoryFileRepository implements FileRepository {
     private long idCounter = 0;
 
     @Override
-    public FileId add(File file, FileInputStream fileInputStream) {
+    public synchronized FileId add(File file, FileInputStream fileInputStream) {
 
         checkNotNull(file, "File cannot be null.");
         checkNotNull(fileInputStream, "File input stream cannot be null.");
@@ -86,7 +83,7 @@ public class InMemoryFileRepository implements FileRepository {
 
 
     @Override
-    public Optional<File> removeFile(FileId fileId) {
+    public synchronized Optional<File> removeFile(FileId fileId) {
 
         checkNotNull(fileId, "File id cannot be null.");
 
@@ -101,10 +98,15 @@ public class InMemoryFileRepository implements FileRepository {
         return Optional.absent();
     }
 
+    @Override
+    public Collection<File> getAllMeta() {
+        return metaContent.values();
+    }
+
     private void acceptFileContent(FileId fileId, FileInputStream fileInputStream) throws IOException {
 
         if (log.isDebugEnabled()) {
-            log.debug("Adding file content (fileid = \"" + fileId.get() + "\")");
+            log.debug("Adding file content (file id = \"" + fileId.get() + "\")");
         }
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

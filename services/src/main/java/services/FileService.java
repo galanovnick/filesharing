@@ -7,6 +7,7 @@ import services.impl.AuthenticationToken;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
+import java.util.Collection;
 
 /**
  * Interface for file management.
@@ -17,7 +18,7 @@ public interface FileService {
      * Add file with specified user as owner.
      * @param file - file to be added.
      */
-    void add(AuthenticationToken token, File file, FileInputStream inputStream)
+    FileId add(AuthenticationToken token, File file, FileInputStream inputStream)
             throws AuthenticationException;
 
     /**
@@ -47,4 +48,6 @@ public interface FileService {
      * @param userId - user id
      */
     void deleteFile(AuthenticationToken token, FileId fileId, UserId userId);
+
+    Collection<File> getAllMeta();
 }

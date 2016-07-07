@@ -6,6 +6,7 @@ import entity.tiny.FileId;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
+import java.util.Collection;
 
 /**
  * Interface for files repository.
@@ -40,4 +41,6 @@ public interface FileRepository {
      * @return stream
      */
     Optional<ByteArrayInputStream> getFileContent(FileId fileId);
+
+    Collection<File> getAllMeta();
 }

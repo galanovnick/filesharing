@@ -18,12 +18,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class InMemoryUserAuthenticationRepository implements UserAuthenticationRepository {
 
-    private Map<UserAuthenticationId, UserAuthentication> content = new HashMap<>();
+    private final Map<UserAuthenticationId, UserAuthentication> content = new HashMap<>();
 
     private long idCounter = 0;
 
     @Override
-    public UserAuthenticationId add(UserAuthentication userAuthentication) {
+    public synchronized UserAuthenticationId add(UserAuthentication userAuthentication) {
 
         checkNotNull(userAuthentication, "UserAuthentication object cannot be null.");
 

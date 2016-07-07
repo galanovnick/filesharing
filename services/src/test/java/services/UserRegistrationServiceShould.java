@@ -9,15 +9,13 @@ import services.impl.UserRegistrationServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.*;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class UserRegistrationServiceShould {
 
-    private UserRegistrationServiceImpl userRegistrationService
+    private final UserRegistrationServiceImpl userRegistrationService
             = new UserRegistrationServiceImpl(new InMemoryUserRepository());
 
     @Test

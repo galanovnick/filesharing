@@ -1,9 +1,6 @@
 package services;
 
-import entity.File;
 import entity.User;
-import entity.tiny.FileId;
-import entity.tiny.LocationId;
 import entity.tiny.UserId;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +9,6 @@ import repository.impl.InMemoryUserRepository;
 import services.impl.AuthenticationToken;
 import services.impl.UserAuthenticationServiceImpl;
 
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;

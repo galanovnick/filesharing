@@ -34,7 +34,7 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
                 if (log.isDebugEnabled()) {
                     log.debug("User with email = \"" + u.getEmail() + "\" already exist.");
                 }
-                throw new DuplicateUserException("User with such email already exist.");
+                throw new DuplicateUserException("User with such email(\"" + u.getEmail() + "\") already exist.");
             }
         }
 

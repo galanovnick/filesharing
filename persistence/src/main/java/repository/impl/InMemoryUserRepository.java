@@ -6,9 +6,9 @@ import entity.tiny.UserId;
 import repository.InvalidIdException;
 import repository.UserRepository;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -17,11 +17,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class InMemoryUserRepository implements UserRepository {
 
-    private Map<entity.tiny.UserId, User> content = new HashMap<>();
+
+
+    private final ConcurrentMap<UserId, User> content = new ConcurrentHashMap<>();
 
     private long idCounter = 0;
 
-    public UserId add(User user) {
+    public synchronized UserId add(User user) {
 
         checkNotNull(user, "User cannot be null.");
 

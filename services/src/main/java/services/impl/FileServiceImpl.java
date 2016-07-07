@@ -13,6 +13,7 @@ import services.UserAuthenticationService;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
+import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -33,7 +34,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void add(AuthenticationToken token,
+    public FileId add(AuthenticationToken token,
                     File file, FileInputStream inputStream) throws AuthenticationException {
 
         checkNotNull(token, "Authentication token cannot be null");
@@ -46,7 +47,7 @@ public class FileServiceImpl implements FileService {
         }
 
         if (authenticationService.checkAuthentication(token, file.getOwnerId())) {
-            fileRepository.add(file, inputStream);
+            return fileRepository.add(file, inputStream);
         } else {
             throw new AuthenticationException("Specified token is not authenticate.");
         }
@@ -112,20 +113,28 @@ public class FileServiceImpl implements FileService {
             log.debug("Trying remove file with id = \"" + fileId + "\" by user with id = \"" + userId + "\".");
         }
 
-        Optional<File> fileMeta = fileRepository.getFileMeta(fileId);
+        if (authenticationService.checkAuthentication(token, userId)) {
 
-        if (fileMeta.isPresent()) {
-            if (!fileMeta.get().getOwnerId().equals(userId)) {
-                throw new IllegalStateException("File can be removed only by owner.");
+            Optional<File> fileMeta = fileRepository.getFileMeta(fileId);
+
+            if (fileMeta.isPresent()) {
+                if (!fileMeta.get().getOwnerId().equals(userId)) {
+                    throw new IllegalStateException("File can be removed only by owner.");
+                }
+
+                fileRepository.removeFile(fileId);
+
+                if (log.isDebugEnabled()) {
+                    log.debug("File (fileId = \"" + fileMeta.get().getId().get() + "\" has been removed.");
+                }
+            } else {
+                throw new IllegalArgumentException("Invalid file id.");
             }
-
-            fileRepository.removeFile(fileId);
-
-            if (log.isDebugEnabled()) {
-                log.debug("File (fileId = \"" + fileMeta.get().getId().get() + "\" has been removed.");
-            }
-        } else {
-            throw new IllegalArgumentException("Invalid file id.");
         }
+    }
+
+    @Override
+    public Collection<File> getAllMeta() {
+        return fileRepository.getAllMeta();
     }
 }
