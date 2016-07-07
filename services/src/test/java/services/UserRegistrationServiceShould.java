@@ -26,7 +26,7 @@ public class UserRegistrationServiceShould {
     }
 
     @Test(expected = DuplicateUserException.class)
-    public void notRegisterDuplicatedUser() throws DuplicateUserException {
+    public void notRegisterDuplicatedUsers() throws DuplicateUserException {
         User someUser = new User("username", "user@mail.mail", "pass");
 
         userRegistrationService.register(someUser);
