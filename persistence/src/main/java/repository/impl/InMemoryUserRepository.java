@@ -17,8 +17,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class InMemoryUserRepository implements UserRepository {
 
-
-
     private final ConcurrentMap<UserId, User> content = new ConcurrentHashMap<>();
 
     private long idCounter = 0;

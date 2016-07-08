@@ -3,7 +3,6 @@ package repository;
 import com.google.common.base.Optional;
 import entity.UserAuthentication;
 import entity.tiny.UserAuthenticationId;
-import services.impl.AuthenticationToken;
 
 import java.util.Collection;
 
@@ -14,9 +13,9 @@ public interface UserAuthenticationRepository {
 
     UserAuthenticationId add(UserAuthentication userAuthentication);
 
-    Optional<UserAuthentication> getByToken(AuthenticationToken token);
+    Optional<UserAuthentication> getByToken(String token);
 
-    void deleteByToken(AuthenticationToken token) throws InvalidIdException;
+    void deleteByToken(String token) throws InvalidIdException;
 
     Collection<UserAuthentication> getAll();
 }

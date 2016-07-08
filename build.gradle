@@ -1,1 +1,24 @@
 version '1.0-SNAPSHOT'
+
+allprojects {
+    apply plugin: 'java'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        compile group: 'com.google.guava', name: 'guava', version: '19.0'
+        compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.6'
+    }
+
+}
+
+project(':services') {
+
+    dependencies {
+        compile project(':persistence')
+
+        testCompile group: 'junit', name: 'junit', version: '4.11'
+    }
+}

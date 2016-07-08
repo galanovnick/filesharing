@@ -50,7 +50,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
             AuthenticationToken token = new AuthenticationToken("token " + user.get().getId().getId());
 
             UserAuthentication userAuthentication = new UserAuthentication(
-                    user.get().getId(), token);
+                    user.get().getId(), token.getToken());
 
             userAuthenticationRepository.add(userAuthentication);
 
@@ -86,7 +86,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
             AuthenticationToken token = new AuthenticationToken("token " + user.get().getId().getId());
 
             UserAuthentication userAuthentication = new UserAuthentication(
-                    user.get().getId(), token);
+                    user.get().getId(), token.getToken());
 
             userAuthenticationRepository.add(userAuthentication);
 
@@ -116,7 +116,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
                 log.debug("Authentication terminated.");
             }
 
-            userAuthenticationRepository.deleteByToken(token);
+            userAuthenticationRepository.deleteByToken(token.getToken());
         } catch (InvalidIdException e) {
             log.error("Attempt to terminate non-existent authentication.");
 
@@ -142,7 +142,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
                     + "\" with token = \"" + token.getToken() + "\".");
         }
 
-        Optional<UserAuthentication> authByToken = userAuthenticationRepository.getByToken(token);
+        Optional<UserAuthentication> authByToken = userAuthenticationRepository.getByToken(token.getToken());
 
         if (authByToken.isPresent() && authByToken.get().getUserId().equals(userId)) {
             if (log.isDebugEnabled()) {
@@ -152,7 +152,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
         }
         if (!authByToken.isPresent()) {
             if (log.isDebugEnabled()) {
-                log.debug("Failed authentication. No authenticated tokens found (token = \"" + token + "\")");
+                log.debug("Failed authentication. No authenticated tokens found (token = \"" + token.getToken() + "\")");
             }
         } else {
             if (log.isDebugEnabled()) {

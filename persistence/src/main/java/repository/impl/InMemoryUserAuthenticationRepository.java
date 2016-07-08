@@ -5,7 +5,6 @@ import entity.UserAuthentication;
 import entity.tiny.UserAuthenticationId;
 import repository.InvalidIdException;
 import repository.UserAuthenticationRepository;
-import services.impl.AuthenticationToken;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -35,7 +34,7 @@ public class InMemoryUserAuthenticationRepository implements UserAuthenticationR
     }
 
     @Override
-    public Optional<UserAuthentication> getByToken(AuthenticationToken token) {
+    public Optional<UserAuthentication> getByToken(String token) {
 
         checkNotNull(token, "Authentication token cannot be null.");
 
@@ -49,7 +48,7 @@ public class InMemoryUserAuthenticationRepository implements UserAuthenticationR
     }
 
     @Override
-    public synchronized void deleteByToken(AuthenticationToken token) throws InvalidIdException {
+    public synchronized void deleteByToken(String token) throws InvalidIdException {
 
         checkNotNull(token, "Authentication token cannot be null.");
 

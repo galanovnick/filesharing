@@ -2,7 +2,6 @@ package entity;
 
 import entity.tiny.UserAuthenticationId;
 import entity.tiny.UserId;
-import services.impl.AuthenticationToken;
 
 /**
  * UserAuthentication entity.
@@ -13,9 +12,9 @@ public class UserAuthentication {
 
     private UserId userId;
 
-    private AuthenticationToken token;
+    private String token;
 
-    public UserAuthentication(UserId userId, AuthenticationToken token) {
+    public UserAuthentication(UserId userId, String token) {
         this.id = new UserAuthenticationId(0);
         this.userId = userId;
         this.token = token;
@@ -37,11 +36,11 @@ public class UserAuthentication {
         this.userId = userId;
     }
 
-    public AuthenticationToken getToken() {
+    public String getToken() {
         return token;
     }
 
-    public void setToken(AuthenticationToken token) {
+    public void setToken(String token) {
         this.token = token;
     }
 
