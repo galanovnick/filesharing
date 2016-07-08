@@ -13,6 +13,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -21,21 +25,23 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class InMemoryFileRepository implements FileRepository {
 
+    private final static Lock ID_LOCK = new ReentrantLock();
+
     private final Logger log = LoggerFactory.getLogger(InMemoryFileRepository.class);
 
-    private final Map<FileId, File> metaContent = new HashMap<>();
+    private final ConcurrentMap<FileId, File> metaContent = new ConcurrentHashMap<>();
 
     private final Map<FileId, FileContent> filesContent = new HashMap<>();
 
     private long idCounter = 0;
 
     @Override
-    public synchronized FileId add(File file, FileInputStream fileInputStream) {
+    public FileId add(File file, FileInputStream fileInputStream) {
 
         checkNotNull(file, "File cannot be null.");
         checkNotNull(fileInputStream, "File input stream cannot be null.");
 
-        file.setId(new FileId(idCounter++));
+        file.setId(new FileId(nextId()));
 
         if (log.isDebugEnabled()) {
             log.debug("Adding file meta (file id = \"" + file.getId().get() + "\")");
@@ -48,7 +54,9 @@ public class InMemoryFileRepository implements FileRepository {
         }
 
         try {
+
             acceptFileContent(file.getId(), fileInputStream);
+
         } catch (IOException e) {
             log.error("Specified file not found.", e);
             throw new IllegalStateException("File not found.");
@@ -83,7 +91,7 @@ public class InMemoryFileRepository implements FileRepository {
 
 
     @Override
-    public synchronized Optional<File> removeFile(FileId fileId) {
+    public Optional<File> removeFile(FileId fileId) {
 
         checkNotNull(fileId, "File id cannot be null.");
 
@@ -94,7 +102,6 @@ public class InMemoryFileRepository implements FileRepository {
 
             return Optional.of(removedFile);
         }
-
         return Optional.absent();
     }
 
@@ -123,5 +130,15 @@ public class InMemoryFileRepository implements FileRepository {
         }
 
         filesContent.put(fileId, new FileContent(outputStream.toByteArray(), fileId));
+    }
+
+    private long nextId() {
+        ID_LOCK.lock();
+
+        try {
+            return idCounter++;
+        } finally {
+            ID_LOCK.unlock();
+        }
     }
 }

@@ -43,7 +43,7 @@ public class FileServiceImpl implements FileService {
 
         if (log.isDebugEnabled()) {
             log.debug("Adding file (filename = \"" + file.getName()
-                    + "\") by user with id = \"" + file.getOwnerId() + "\"");
+                    + "\") by user with id = \"" + file.getOwnerId().getId() + "\"");
         }
 
         if (authenticationService.checkAuthentication(token, file.getOwnerId())) {
@@ -63,7 +63,7 @@ public class FileServiceImpl implements FileService {
 
         if (log.isDebugEnabled()) {
             log.debug("Getting file content(file id = \""
-                    + fileId.get() + "\" by user with id = \"" + userId + "\"");
+                    + fileId.get() + "\" by user with id = \"" + userId.getId() + "\"");
         }
 
         if (authenticationService.checkAuthentication(token, userId)) {
@@ -89,7 +89,7 @@ public class FileServiceImpl implements FileService {
 
         if (log.isDebugEnabled()) {
             log.debug("Getting file meta(file id = \""
-                    + fileId.get() + "\" by user with id = \"" + userId + "\"");
+                    + fileId.get() + "\" by user with id = \"" + userId.getId() + "\"");
         }
 
         if (authenticationService.checkAuthentication(token, userId)) {
@@ -110,7 +110,8 @@ public class FileServiceImpl implements FileService {
     public void deleteFile(AuthenticationToken token, FileId fileId, UserId userId) {
 
         if (log.isDebugEnabled()) {
-            log.debug("Trying remove file with id = \"" + fileId + "\" by user with id = \"" + userId + "\".");
+            log.debug("Trying remove file with id = \"" + fileId.get()
+                    + "\" by user with id = \"" + userId.getId() + "\".");
         }
 
         if (authenticationService.checkAuthentication(token, userId)) {

@@ -9,6 +9,8 @@ import repository.UserRepository;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -17,15 +19,17 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class InMemoryUserRepository implements UserRepository {
 
+    private final static Lock ID_LOCK = new ReentrantLock();
+
     private final ConcurrentMap<UserId, User> content = new ConcurrentHashMap<>();
 
     private long idCounter = 0;
 
-    public synchronized UserId add(User user) {
+    public UserId add(User user) {
 
         checkNotNull(user, "User cannot be null.");
 
-        user.setId(new entity.tiny.UserId(idCounter++));
+        user.setId(new entity.tiny.UserId(nextId()));
 
         content.put(user.getId(), user);
 
@@ -66,5 +70,15 @@ public class InMemoryUserRepository implements UserRepository {
             }
         }
         return Optional.absent();
+    }
+
+    private long nextId() {
+        ID_LOCK.lock();
+
+        try{
+            return idCounter++;
+        } finally {
+            ID_LOCK.unlock();
+        }
     }
 }

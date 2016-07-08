@@ -5,6 +5,7 @@ import entity.File;
 import entity.User;
 import entity.tiny.FileId;
 import entity.tiny.LocationId;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import repository.FileRepository;
@@ -114,8 +115,6 @@ public class FileServiceShould {
 
         List<Future<FileId>> futuresList = new ArrayList<>();
 
-        file = new File(new LocationId(0), fileContent.getName() , null, user.getId());
-
         for (int i = 0; i < 50; i++) {
             futuresList.add(executorService.submit(() -> {
 
@@ -123,16 +122,26 @@ public class FileServiceShould {
                 countDownLatch.await();
 
                 try {
+                    File file1 = new File(new LocationId(0), fileContent.getName() , null, user.getId());
+
                     FileInputStream fileStream = new FileInputStream(fileContent);
-                    fileService.deleteFile(token, fileService.add(token, file, fileStream), user.getId());
+                    fileService.deleteFile(token, fileService.add(token, file1, fileStream), user.getId());
+                    fileStream.close();
 
+                    File file2 = new File(new LocationId(0), fileContent.getName() , null, user.getId());
                     fileStream = new FileInputStream(fileContent);
-                    fileService.add(token, file, fileStream);
+                    fileService.add(token, file2, fileStream);
+                    fileStream.close();
 
+                    File file3 = new File(new LocationId(0), fileContent.getName() , null, user.getId());
                     fileStream = new FileInputStream(fileContent);
-                    fileService.deleteFile(token, fileService.add(token, file, fileStream), user.getId());
+                    fileService.deleteFile(token, fileService.add(token, file3, fileStream), user.getId());
+                    fileStream.close();
+
+                    File file4 = new File(new LocationId(0), fileContent.getName() , null, user.getId());
                     fileStream = new FileInputStream(fileContent);
-                    fileService.deleteFile(token, fileService.add(token, file, fileStream), user.getId());
+                    fileService.deleteFile(token, fileService.add(token, file4, fileStream), user.getId());
+                    fileStream.close();
                 } catch (AuthenticationException e) {
                     fail("Not safe in multithreading.");
                 }

@@ -9,6 +9,10 @@ import repository.UserAuthenticationRepository;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -17,16 +21,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class InMemoryUserAuthenticationRepository implements UserAuthenticationRepository {
 
-    private final Map<UserAuthenticationId, UserAuthentication> content = new HashMap<>();
+    private final ConcurrentMap<UserAuthenticationId, UserAuthentication> content
+            = new ConcurrentHashMap<>();
+
+    private final static Lock ID_LOCK = new ReentrantLock();
 
     private long idCounter = 0;
 
     @Override
-    public synchronized UserAuthenticationId add(UserAuthentication userAuthentication) {
+    public UserAuthenticationId add(UserAuthentication userAuthentication) {
 
         checkNotNull(userAuthentication, "UserAuthentication object cannot be null.");
 
-        userAuthentication.setId(new UserAuthenticationId(idCounter++));
+        userAuthentication.setId(new UserAuthenticationId(nextId()));
 
         content.put(userAuthentication.getId(), userAuthentication);
 
@@ -48,7 +55,7 @@ public class InMemoryUserAuthenticationRepository implements UserAuthenticationR
     }
 
     @Override
-    public synchronized void deleteByToken(String token) throws InvalidIdException {
+    public void deleteByToken(String token) throws InvalidIdException {
 
         checkNotNull(token, "Authentication token cannot be null.");
 
@@ -65,5 +72,15 @@ public class InMemoryUserAuthenticationRepository implements UserAuthenticationR
     @Override
     public Collection<UserAuthentication> getAll() {
         return content.values();
+    }
+
+    private long nextId() {
+        ID_LOCK.lock();
+
+        try {
+            return idCounter++;
+        } finally {
+            ID_LOCK.unlock();
+        }
     }
 }
